@@ -13,7 +13,7 @@ const RapidMediaDisplays = (props) => {
             <Card sx={{ maxWidth: 600, margin: "auto" }}>
               <CardHeader
                 title={item?.media?.user.full_name}
-                subheader={format(new Date(item?.media?.caption?.created_at), "MMM dd, yyyy")}
+                subheader={format(new Date(item?.media?.caption?.created_at * 1000), "MMM dd, yyyy")}
               />
               <CardMedia
                 component={'video'}
