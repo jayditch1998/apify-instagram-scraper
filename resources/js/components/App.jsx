@@ -14,7 +14,8 @@ import {
 import AdbIcon from "@mui/icons-material/Adb";
 import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
-import Search from "./components/pages/Search";
+// import Search from "./components/pages/Search";
+import SearchRapid from "./components/pages/SearchRapid";
 
 function App() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -190,7 +191,8 @@ function App() {
         </Toolbar>
       </Container>
     </AppBar>
-    <Search />
+    {/* <Search /> */}
+    <SearchRapid />
     </Box>
   );
 }

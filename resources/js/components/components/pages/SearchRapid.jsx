@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import {
   Box,
   Button,
@@ -13,19 +13,17 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import MediaDisplays from "./MediaDisplays";
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import RapidMediaDisplays from "./RapidMediaDisplays";
 
-const Search = () => {
+const SearchRapid = () => {
   const [query, setQuery] = useState("");
   const [searching, setSearching] = useState(false);
   const [userData, setData] = useState([]);
-  const [datasetId, setDatasetId] = useState('');
-  const [runId, setRunId] = useState();
-  const [runStatus, setRunStatus] = useState('');
 
   const handleInputChange = (event) => {
     setQuery(event.target.value);
   };
-  const TERMINAL_STATES = ['SUCCEEDED', 'FAILED', 'TIMED-OUT',	'ABORTED']
 
   const handleSubmitSearch = async () => {
     try {
@@ -34,64 +32,21 @@ const Search = () => {
         console.log("Search query:", query);
       }
       setData([]);
-      const response = await axios.post(
-        "apify/run-actor",
+      const response = await axios.get(
+        `rapidapi/get-reels?username=${query}`,
         {
           username: query
         }
       );
+      
       if (response.status === 200) {
-        setRunId(response?.data?.data.id)
-        setDatasetId(response?.data?.data.defaultDatasetId)
-        // setSearching(false);
-        // await checkRunStatus(response?.data?.data.id);
-      }
-      console.log('RESPONSE: ', response);
-    } catch (error) {
-
-    }
-  };
-
-  const fetchDataset = async () => {
-    console.log('fetchDatasetfetchDataset');
-    try {
-      const response = await axios.get(`apify/dataset/${datasetId}`);
-      if (response.status === 200) {
-        setData(response.data);
-        checkRunStatus()
+        setData(response?.data?.data.items)
+        setSearching(false);
       }
     } catch (error) {
-      console.error('API call failed', error);
+      console.error(error);
     }
   };
-
-  const checkRunStatus = async (id=null) => {
-    try {
-      const response = await axios.get(`apify/run-status/${id ?? runId}`);
-      if (response.status === 200) {
-        if(response?.data?.status == 'SUCCEEDED') {
-          setSearching(false);
-        }
-        setRunStatus(response?.data?.status);
-      }
-    } catch (error) {
-      console.error('API call failed', error);
-    }
-  };
-
-  useEffect(() => {
-    if(runId && !TERMINAL_STATES.includes(runStatus)) {
-      const interval = setInterval(() => {
-        console.log('STATE: ', runStatus);
-        fetchDataset();
-      }, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [runId, runStatus]);
-  
-  useEffect(() => {
-
-  }, []);
 
   return (
     <Fragment>
@@ -118,6 +73,19 @@ const Search = () => {
               }}
             >
               Search User
+            </Typography>
+            <Typography
+              // variant="h4"
+              align="center"
+              sx={{
+                // mb: 2,
+                fontSize: '15px',
+                fontWeight: 600,
+                color: 'gray',
+                // textTransform: "lowercase",
+              }}
+            >
+              <PriorityHighIcon /> You are using RapidAPI Service <PriorityHighIcon />
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -199,10 +167,10 @@ const Search = () => {
         </Grid>
       </Container>
       {
-        userData.length !== 0 && <MediaDisplays userData={userData}/>
+        userData.length !== 0 && <RapidMediaDisplays userData={userData}/>
       }
     </Fragment>
   );
 };
 
-export default Search;
+export default SearchRapid;

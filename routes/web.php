@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\InstagramScraperController;
+use App\Http\Controllers\RapidApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -12,4 +13,8 @@ Route::controller(InstagramScraperController::class)->prefix('apify')->group(fun
   Route::get('/dataset/{id}', 'getDataSet');
   Route::get('/run-status/{id}', 'checkRunStatus');
   Route::get('/proxy-image', 'proxyImage');
+});
+
+Route::controller(RapidApiController::class)->prefix('rapidapi')->group(function() {
+  Route::get('/get-reels', 'getUserReels');
 });
